@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.wataru.ambitionlist.model.AmbitionDto;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,29 +34,37 @@ public class AmbitionDao {
     }
 
     //目標タイトルをリストに表示する
-    public List<String> findAllAmb() {
-        List<String> list = new ArrayList<String>();
+    public List<AmbitionDto> findAllAmb() {
+        List<AmbitionDto> list = new ArrayList<AmbitionDto>();
+        AmbitionDto dto = null;
         String[] cols = {"amb_id", "amb_title"};
         Cursor cs = db.query(TABLE_NAME, cols, null, null, null, null, cols[0]);
 
         while(cs.moveToNext()) {
-            list.add(cs.getString(1));
+            dto = new AmbitionDto();
+            dto.setAmbId(cs.getInt(0));
+            dto.setAmbTitle(cs.getString(1));
+            list.add(dto);
         }
 
         return list;
     }
 
     //目標タイトルから目標を探す
-    public String findByAmbTitles(String[] ambTitles) {
-        String resultAmbTitle = null;
+    public AmbitionDto findByAmbTitles(String[] ambTitles) {
+        AmbitionDto dto = null;
         String[] cols = {"amb_id", "amb_title"};
         Cursor cs = db.query(TABLE_NAME, cols, "amb_title = ?", ambTitles, null, null, null, null);
 
         if(cs.moveToFirst()) {
-            resultAmbTitle = cs.getString(1);
+            dto = new AmbitionDto();
+            dto.setAmbId(cs.getInt(0));
+            dto.setAmbTitle(cs.getString(1));
         }
 
-        return resultAmbTitle;
+        return dto;
 
     }
+
+
 }

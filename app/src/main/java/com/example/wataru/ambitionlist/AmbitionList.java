@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.wataru.ambitionlist.dao.AmbitionDao;
 import com.example.wataru.ambitionlist.database.DatabaseOpenHelper;
 import com.example.wataru.ambitionlist.error.ErrorLog;
+import com.example.wataru.ambitionlist.model.AmbitionDto;
 
 import java.util.List;
 
@@ -27,8 +28,8 @@ public class AmbitionList extends Activity {
     DatabaseOpenHelper helper = null;
     EditText editAmb = null;
     ListView listAmb = null;
-    ArrayAdapter<String> adapter = null;
-    List<String> ambTitle = null;
+    ArrayAdapter<AmbitionDto> adapter = null;
+    List<AmbitionDto> ambTitleList = null;
 
 
     @Override
@@ -45,12 +46,12 @@ public class AmbitionList extends Activity {
         SQLiteDatabase db = helper.getReadableDatabase();
         try{
             AmbitionDao dao = new AmbitionDao(db);
-            ambTitle = dao.findAllAmb();
+            ambTitleList = dao.findAllAmb();
         }finally {
             db.close();
         }
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ambTitle);
+        adapter = new ArrayAdapter<AmbitionDto>(this, android.R.layout.simple_list_item_multiple_choice, ambTitleList);
         listAmb.setAdapter(adapter);
 
         //リスト項目長押し時の処理を定義
@@ -70,7 +71,12 @@ public class AmbitionList extends Activity {
                                         SQLiteDatabase db = helper.getWritableDatabase();
                                         AmbitionDao dao = new AmbitionDao(db);
                                         dao.deleteToAmbTitles(ambTitles);
-                                        adapter.remove(ambTitles[0]);
+
+                                        db = helper.getReadableDatabase();
+                                        dao = new AmbitionDao(db);
+
+                                        AmbitionDto dto = dao.findByAmbTitles(ambTitles);
+                                        adapter.remove(dto);
                                 }
                             }
                         )
@@ -106,6 +112,7 @@ public class AmbitionList extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    //目標を追加するボタン
     public void onClick(View v) {
         //対象となる目標の文字列
         String target = editAmb.getText().toString();
@@ -118,8 +125,16 @@ public class AmbitionList extends Activity {
             } finally {
                 db.close();
             }
-
-            ambTitle.add(editAmb.getText().toString());
+            db = helper.getReadableDatabase();
+            String[] targets = {target};
+            AmbitionDto dto = null;
+            try {
+                AmbitionDao dao = new AmbitionDao(db);
+                dto = dao.findByAmbTitles(targets);
+            } finally {
+                db.close();
+            }
+            ambTitleList.add(dto);
             listAmb.setAdapter(adapter);
             editAmb.setText(null);
         } else {
