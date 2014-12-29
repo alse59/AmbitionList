@@ -5,34 +5,33 @@
     tools:context=".AmbitionList"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
-
-        <EditText
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editAmb" />
+            android:layout_gravity="center_horizontal">
 
-        <Button
-            android:layout_width="wrap_content"
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editAmb" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="決定"
+                android:id="@+id/button"
+                android:onClick="onClick"
+                android:layout_gravity="right" />
+
+        </LinearLayout>
+        <ListView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="決定"
-            android:id="@+id/button"
-            android:onClick="onClick"
-            android:layout_gravity="right" />
-
-    </LinearLayout>
+            android:id="@+id/listAmb"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:choiceMode="multipleChoice"/>
 
 
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listAmb"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:choiceMode="multipleChoice"/>
 </LinearLayout>
